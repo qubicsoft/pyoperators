@@ -5,7 +5,7 @@ if numexpr.__version__ < 2.0:
 import numpy as np
 from .core import (
     Operator, BlockColumnOperator, CompositionOperator, IdentityOperator,
-    ReductionOperator)
+    ReductionOperator, Mismatch)
 from .flags import idempotent, inplace, real, separable, square
 from .utils import (
     operation_assignment, operation_symbol, pi, strenum, tointtuple)
@@ -59,12 +59,12 @@ class _CartesianSpherical(Operator):
     @staticmethod
     def _validatecartesian(shape):
         if len(shape) == 0 or shape[-1] != 3:
-            raise ValueError('Invalid cartesian shape.')
+            raise Mismatch('Invalid cartesian shape.')
 
     @staticmethod
     def _validatespherical(shape):
         if len(shape) == 0 or shape[-1] != 2:
-            raise ValueError('Invalid spherical shape.')
+            raise Mismatch('Invalid spherical shape.')
 
     @staticmethod
     def _rule_identity(s, o):
@@ -628,8 +628,8 @@ class _1dNdOperator(Operator):
 
     def _validate_to1d(self, shape):
         if shape[-1] != self.ndim:
-            raise ValueError("Invalid shape '{0}'. The expected last dimension"
-                             " is '{1}'.".format(shape, self.ndim))
+            raise Mismatch("Invalid shape '{0}'. The expected last dimension i"
+                           "s '{1}'.".format(shape, self.ndim))
 
 
 class To1dOperator(_1dNdOperator):
@@ -664,8 +664,8 @@ class To1dOperator(_1dNdOperator):
             keywords['reshapein'] = self._reshape_to1d
         if 'reshapeout' not in keywords:
             keywords['reshapeout'] = self._reshape_tond
-        if 'validatein' not in keywords:
-            keywords['validatein'] = self._validate_to1d
+        if 'validate_shapein' not in keywords:
+            keywords['validate_shapein'] = self._validate_to1d
         _1dNdOperator.__init__(self, shape_, order=order, **keywords)
         self.set_rule('I', lambda s: ToNdOperator(s.shape_, order=s.order))
 
@@ -705,8 +705,8 @@ class ToNdOperator(_1dNdOperator):
             keywords['reshapein'] = self._reshape_tond
         if 'reshapeout' not in keywords:
             keywords['reshapeout'] = self._reshape_to1d
-        if 'validateout' not in keywords:
-            keywords['validateout'] = self._validate_to1d
+        if 'validate_shapeout' not in keywords:
+            keywords['validate_shapeout'] = self._validate_to1d
         _1dNdOperator.__init__(self, shape_, order=order, **keywords)
         self.set_rule('I', lambda s: To1dOperator(
             s.shape_, order=s.order))

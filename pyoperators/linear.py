@@ -13,7 +13,7 @@ from scipy.sparse.linalg import eigsh
 from .core import (
     Operator, BlockRowOperator, BroadcastingOperator, CompositionOperator,
     DenseOperator, DiagonalOperator, HomothetyOperator, IdentityOperator,
-    ReductionOperator, _pool)
+    ReductionOperator, Mismatch, _pool)
 from .flags import inplace, linear, real, square, symmetric
 from .memory import empty
 from .utils import (
@@ -1140,18 +1140,18 @@ class SwapAxesOperator(Operator):
             shape[self.axis2], shape[self.axis1]
         return shape
 
-    def validatein(self, shape):
+    def validate_shapein(self, shape):
         if self.axis1 >= len(shape) or self.axis1 < -len(shape):
-            raise ValueError(
+            raise Mismatch(
                 "The input number of dimension '{0}' is lesser than that requi"
                 "red by axis1 '{1}'.".format(len(shape), self.axis1))
         if self.axis2 >= len(shape) or self.axis2 < -len(shape):
-            raise ValueError(
+            raise Mismatch(
                 "The input number of dimension '{0}' is lesser than that requi"
                 "red by axis2 '{1}'.".format(len(shape), self.axis2))
 
     reshapeout = reshapein
-    validateout = validatein
+    validate_shapeout = validate_shapein
 
     @staticmethod
     def _rule_swapaxes(self, other):
