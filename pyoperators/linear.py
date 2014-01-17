@@ -13,8 +13,8 @@ from scipy.sparse.linalg import eigsh
 from .decorators import inplace, linear, real, square, symmetric
 from .core import (
     Operator, BlockRowOperator, BroadcastingBase, CompositionOperator,
-    DenseOperator, DiagonalOperator, HomothetyOperator, ReductionOperator,
-    _pool)
+    DenseOperator, DiagonalOperator, HomothetyOperator, MaskOperator,
+    ReductionOperator, _pool)
 from .memory import empty
 from .utils import (
     cast, complex_dtype, float_dtype, izip_broadcast, pi, strshape, tointtuple)
@@ -236,7 +236,7 @@ class PackOperator(PackBase):
                           validateout=self._validate_packed, **keywords)
         self.set_rule('T', lambda s: UnpackOperator(s.data,
                                                     broadcast=s.broadcast))
-        self.set_rule('T,.', '1', CompositionOperator)
+        self.set_rule('.,T', '1', CompositionOperator)
 
     def direct(self, input, output):
         if self.broadcast == 'rightward':
@@ -272,7 +272,8 @@ class UnpackOperator(PackBase):
                           validateout=self._validate_unpacked, **keywords)
         self.set_rule('T', lambda s: PackOperator(s.data,
                                                   broadcast=s.broadcast))
-        self.set_rule('T,.', '1', CompositionOperator)
+        self.set_rule('.,T', lambda s, o: MaskOperator(
+            ~s.data, broadcast=s.broadcast), CompositionOperator)
 
     def direct(self, input, output):
         output[...] = 0
