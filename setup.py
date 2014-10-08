@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import numpy as np
+import sys
 from hooks import get_cmdclass, get_version
 from numpy.distutils.core import setup
 from numpy.distutils.extension import Extension
@@ -10,12 +11,14 @@ name = 'pyoperators'
 long_description = open('README.rst').read()
 keywords = 'scientific computing'
 platforms = 'MacOS X,Linux,Solaris,Unix,Windows'
+define_macros = [] if sys.version_info.major == 2 else [('NPY_PY3K', None)]
 
 ext_modules = [Extension("pyoperators.utils.cythonutils",
                          sources=["pyoperators/utils/cythonutils.pyx"],
                          include_dirs=[np.get_include()]),
                Extension("pyoperators.utils.ufuncs",
-                         sources=["pyoperators/utils/ufuncs.c.src"])]
+                         sources=["pyoperators/utils/ufuncs.c.src"],
+                         define_macros=define_macros)]
 
 setup(name=name,
       version=get_version(name, VERSION),

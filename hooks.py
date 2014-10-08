@@ -179,7 +179,7 @@ def _get_version_git(default):
             raise RuntimeError(
                 'Command failed (error {}): {}{}'.format(
                     process.returncode, cmd, stderr))
-        return stdout.strip()
+        return stdout.strip().decode('utf-8')
 
     def get_branches():
         return run('for-each-ref --sort=-committerdate --format=%(refname) '
