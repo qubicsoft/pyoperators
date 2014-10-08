@@ -42,7 +42,7 @@ REGEX_RELEASE = '^v(?P<name>[0-9.]+)$'
 try:
     import os
     from Cython.Build import cythonize
-    USE_CYTHON = bool(int(os.getenv('SETUPHOOKS_USE_CYTHON', "1")))
+    USE_CYTHON = bool(int(os.getenv('SETUPHOOKS_USE_CYTHON', '1') or '0'))
 except ImportError:
     USE_CYTHON = False
 
