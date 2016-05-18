@@ -3005,6 +3005,8 @@ class BlockOperator(NonCommutativeCompositeOperator):
     def _validate_partition_composition(op1, op2):
         axisin1 = first_is_not([op1.axisin, op1.new_axisin], None)
         axisout2 = first_is_not([op2.axisout, op2.new_axisout], None)
+        if axisin1 is None or axisout2 is None:
+            return None
         if axisin1 < 0 and op2.shapeout is not None:
             axisin1 += len(op2.shapeout)
         if axisout2 < 0 and op1.shapein is not None:
@@ -3015,12 +3017,8 @@ class BlockOperator(NonCommutativeCompositeOperator):
            op1.new_axisin is not None and op2.axisout is not None:
             #XXX we could handle these cases with a reshape
             return None
-        p1 = op1.partitionin
-        p2 = op2.partitionout
-        if p1 is None or p2 is None:
-            return None
         try:
-            p = merge_none(p1, p2)
+            p = merge_none(op1.partitionin, op2.partitionout)
         except ValueError:
             return None
         pout = None if op1.partitionout is None else op1._get_partitionout(
