@@ -101,7 +101,10 @@ def deprecated(msg):
             def __init__(self, *args, **keywords):
                 warn('Class {!r} is deprecated: {}'.format(x.__name__, msg),
                      PyOperatorsDeprecationWarning)
-                x.__init__.__func__(self, *args, **keywords)
+                if sys.version_info.major > 2:
+                    x.__init__(self, *args, **keywords)
+                else:
+                    x.__init__.__func__(self, *args, **keywords)
             __init__.__doc__ = x.__init__.__doc__
             return type(x.__name__, x.__bases__, {'__init__': __init__,
                                                   '__doc__': x.__doc__})
