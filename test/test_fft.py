@@ -10,6 +10,11 @@ from pyoperators.fft import _FFTWRealConvolutionOperator
 from pyoperators.utils.testing import (
     assert_eq, assert_is_instance, assert_same)
 
+try:
+    import pyfftw
+except ImportError:
+    from nose.plugins.skip import SkipTest
+    raise SkipTest
 
 def test_convolution_real():
 
