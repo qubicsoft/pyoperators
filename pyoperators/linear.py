@@ -1,6 +1,9 @@
 from __future__ import absolute_import, division, print_function
 import multiprocessing
-import numexpr
+try:
+    import numexpr
+except:
+    pass
 import numpy as np
 import operator
 try:
@@ -473,6 +476,7 @@ class DiagonalNumexprOperator(DiagonalBase):
     """
     def __init__(self, data, expr, global_dict=None, var='data',
                  broadcast=None, dtype=None, **keywords):
+        import numexpr
         if not isinstance(expr, str):
             raise TypeError('The second argument is not a string expression.')
         if numexpr.__version__ < '2.0.2':
@@ -1391,6 +1395,7 @@ class SymmetricBandToeplitzOperator(Operator):
     """
     def __init__(self, shapein, firstrow, dtype=None, fftw_flag='FFTW_MEASURE',
                  nthreads=None, **keywords):
+        import pyfftw
         shapein = tointtuple(shapein)
         if dtype is None:
             dtype = float

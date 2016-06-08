@@ -61,6 +61,7 @@ class WaveletOperator(Operator):
         Wrapping around PyWavelets
 
         """
+        import pywt
         if not isinstance(wavelet, pywt.Wavelet):
             wavelet = pywt.Wavelet(wavelet)
         self.wavelet = wavelet
@@ -126,6 +127,7 @@ class Wavelet2dOperator(Operator):
         Wrapping around PyWavelet
 
         """
+        import pywt
         if not isinstance(wavelet, pywt.Wavelet):
             wavelet = pywt.Wavelet(wavelet)
         self.wavelet = wavelet
