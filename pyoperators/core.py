@@ -3339,6 +3339,7 @@ class BlockRowOperator(BlockOperator):
         self._need_temporary = any(not o.flags.update_output for o in
                                    self.operands[1:])
 
+    
     def direct(self, input, output):
         if None in self.partitionin:
             partitionin = list(self.partitionin)
@@ -3360,7 +3361,7 @@ class BlockRowOperator(BlockOperator):
                           self.__name__) as buf:
 
             for op, sin in zip(self.operands[1:], sins[1:]):
-                i = input[sin]
+                i = input[tuple(sin)]
                 with _pool.copy_if(i, op.flags.aligned_input,
                                    op.flags.contiguous_input) as i:
                     if op.flags.update_output:
