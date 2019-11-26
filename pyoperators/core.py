@@ -3213,8 +3213,8 @@ class BlockDiagonalOperator(BlockOperator):
 
         for op, sin, sout in zip(self.operands, self.get_slicesin(),
                                  self.get_slicesout(partitionout)):
-            i = input[sin]
-            o = output[sout]
+            i = input[tuple(sin)]
+            o = output[tuple(sout)]
             with _pool.copy_if(i, op.flags.aligned_input,
                                op.flags.contiguous_input) as i:
                 with _pool.copy_if(o, op.flags.aligned_output,
@@ -3283,7 +3283,7 @@ class BlockColumnOperator(BlockOperator):
             partitionout = self.partitionout
 
         for op, sout in zip(self.operands, self.get_slicesout(partitionout)):
-            o = output[sout]
+            o = output[tuple(sout)]
             with _pool.copy_if(o, op.flags.aligned_output,
                                op.flags.contiguous_output) as o:
                 op.direct(input, o)
@@ -3351,7 +3351,7 @@ class BlockRowOperator(BlockOperator):
             partitionin = self.partitionin
 
         sins = tuple(self.get_slicesin(partitionin))
-        i = input[sins[0]]
+        i = input[tuple(sins[0])]
         op = self.operands[0]
         with _pool.copy_if(i, op.flags.aligned_input,
                            op.flags.contiguous_input) as i:
@@ -3555,7 +3555,7 @@ class BroadcastingBase(Operator):
                 if nargs == 0:
                     sliced = type(self)(*args, **keywords)
                 else:
-                    sliced = type(self)(data[s], broadcast=b,
+                    sliced = type(self)(data[tuple(s)], broadcast=b,
                                         *args, **keywords)
                 ops.append(func_operation(sliced, o))
 
