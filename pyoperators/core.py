@@ -13,7 +13,7 @@ import pyoperators as po
 import scipy.sparse as sp
 import sys
 import types
-from collections import MutableMapping, MutableSequence, MutableSet
+from collections.abc import MutableMapping, MutableSequence, MutableSet
 from itertools import groupby
 from . import config
 from .flags import (
