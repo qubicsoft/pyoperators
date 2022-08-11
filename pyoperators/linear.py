@@ -349,7 +349,7 @@ class SparseBase(Operator):
         if isinstance(m, sp.dok_matrix):
             sizeoftuple = sys.getsizeof(())
             return (24 * m.ndim + m.dtype.itemsize +
-                    2 * sizeoftuple + 24) * len(m.items())
+                    2 * sizeoftuple + 24) * len(m)
         try:
             return m.data.nbytes
         except AttributeError:
@@ -1492,7 +1492,7 @@ class DifferenceOperator(Operator):
         shapetmp = list(input.shape)
         shapetmp[self.axis] += 2
         tmp = np.zeros(shapetmp)
-        tmp[slices] = input
+        tmp[tuple(slices)] = input
         output[...] = -np.diff(tmp, axis=self.axis)
 
     def reshapein(self, shapein):

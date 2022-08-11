@@ -10,7 +10,7 @@ from pyoperators import (
 
 COMPOSITES = (AdditionOperator, BlockColumnOperator, BlockDiagonalOperator,
               BlockRowOperator, CompositionOperator, MultiplicationOperator)
-PYTHON2 = sys.version_info.major == 2
+PYTHON_VERSION = sys.version_info.major == 2
 
 class Op1(Operator):
     nbytes = 4
@@ -24,7 +24,7 @@ def test_sparse():
     D = np.arange(15, dtype=float).reshape(3, 5)
     matrices = (sp.coo_matrix, sp.bsr_matrix, sp.csc_matrix, sp.csr_matrix,
                 sp.dia_matrix, sp.dok_matrix)
-    expecteds = 224, 184, 192, 184, 308, 2688 if PYTHON2 else 2464
+    expecteds = 224, 184, 192, 184, 308, 2240 if sys.version_info >= (3, 8) else 2464
 
     def func(matrix, expected):
         op = SparseOperator(matrix(D))
